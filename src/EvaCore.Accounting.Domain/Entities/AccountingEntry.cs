@@ -20,6 +20,11 @@ public class AccountingEntry
     public int? Type { get; set; } 
 
     /// <summary>
+    /// Identifier of the projection
+    /// </summary>
+    public bool? Projection { get; set; } 
+
+    /// <summary>
     /// Creation date of the accounting entry
     /// </summary>
     public DateTime? CreationDate { get; set; } 

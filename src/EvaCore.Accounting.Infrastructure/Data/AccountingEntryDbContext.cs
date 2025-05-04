@@ -18,6 +18,7 @@ public class AccountingEntryDbContext:DbContext
             entity.Property(e => e.CreationDate).HasColumnName("ae_creation_date");
             entity.Property(e => e.AlterDate).HasColumnName("ae_alter_date");
             entity.Property(e => e.Description).HasColumnName("ae_description");
+            entity.Property(e => e.Projection).HasColumnName("ae_projection");
             entity.Property(e => e.Type).HasColumnName("ae_type");
 
         });

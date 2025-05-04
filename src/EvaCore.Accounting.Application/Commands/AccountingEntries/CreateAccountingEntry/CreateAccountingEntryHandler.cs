@@ -21,6 +21,7 @@ public class CreateAccountingEntryHandler : IRequestHandler<CreateAccountingEntr
             Id = request.Id,
             Description = request.Description,
             Type = request.Type,
+            Projection = request.Projection,
             CreationDate = request.Date??DateTime.UtcNow
         };
 

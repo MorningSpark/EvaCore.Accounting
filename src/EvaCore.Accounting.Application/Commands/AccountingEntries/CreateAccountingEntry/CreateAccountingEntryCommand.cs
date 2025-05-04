@@ -26,6 +26,11 @@ public class CreateAccountingEntryCommand:IRequest<AccountingEntry>
     public int? Type { get; set; } 
 
     /// <summary>
+    /// Projection
+    /// </summary>
+    public bool? Projection { get; set; } 
+
+    /// <summary>
     /// Transaction Date
     /// </summary>
     public DateTime? Date { get; set; } 
