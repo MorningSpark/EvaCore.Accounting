@@ -10,6 +10,8 @@ public static class DependencyInjection
         services.AddDbContext<AccountingAccountDbContext>(options=>options.UseSqlServer(connectionString));
         services.AddDbContext<AccountingEntryDbContext>(options=>options.UseSqlServer(connectionString));
         services.AddDbContext<AccountingEntryDetailDbContext>(options=>options.UseSqlServer(connectionString));
+        services.AddDbContext<TransactionDetailDbContext>(options=>options.UseSqlServer(connectionString));
+        services.AddDbContext<TransactionDbContext>(options=>options.UseSqlServer(connectionString));
         return services;
     }
 }
