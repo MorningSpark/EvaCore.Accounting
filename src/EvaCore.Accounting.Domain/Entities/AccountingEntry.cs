@@ -10,6 +10,11 @@ public class AccountingEntry
     public int? Id { get; set; }
 
     /// <summary>
+    /// Identifier of the transaction
+    /// </summary>
+    public int? TransactionId { get; set; }
+
+    /// <summary>
     /// Identifier of the accounting account
     /// </summary>
     public string? Description { get; set; } 
@@ -23,6 +28,11 @@ public class AccountingEntry
     /// Identifier of the projection
     /// </summary>
     public bool? Projection { get; set; } 
+
+    /// <summary>
+    /// Total value of the accounting entry
+    /// </summary>
+    public decimal? ValorTotal { get; set; }
 
     /// <summary>
     /// Creation date of the accounting entry

@@ -7,7 +7,7 @@ namespace EvaCore.Accounting.Infrastructure.Data;
 public class TransactionDetailDbContext:DbContext
 {
     public TransactionDetailDbContext(DbContextOptions<TransactionDetailDbContext> options) : base(options){}
-    public DbSet<TransactionDetail> Transactions { get; set; } = null!;
+    public DbSet<TransactionDetail> TransactionDetails { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TransactionDetail>(entity =>
@@ -17,8 +17,8 @@ public class TransactionDetailDbContext:DbContext
             entity.Property(e => e.Id).HasColumnName("td_id");
             entity.Property(e => e.TransactionId).HasColumnName("td_transaction_id");
             entity.Property(e => e.AccountingAccountId).HasColumnName("td_accounting_account_id");
-            entity.Property(e => e.CreditDistribution).HasColumnName("td_credit_distribution");
-            entity.Property(e => e.DebitDistribution).HasColumnName("td_debit_distribution");
+            entity.Property(e => e.CreditFormula).HasColumnName("td_credit_formula");
+            entity.Property(e => e.DebitFormula).HasColumnName("td_debit_formula");
             entity.Property(e => e.CreationDate).HasColumnName("td_creation_date");
             entity.Property(e => e.AlterDate).HasColumnName("td_alter_date");
             

@@ -1,7 +1,9 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using EvaCore.Accounting.Domain.Entities;
 using EvaCore.Accounting.Infrastructure.Data;
+using EvaCore.Accounting.Infrastructure.Utilitario;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,16 +12,18 @@ namespace EvaCore.Accounting.Application.Commands.AccountingAccounts.FetchAccoun
 public class FetchAccountingAccountHandler : IRequestHandler<FetchAccountingAccountCommand, List<AccountingAccount>>
 {
     private readonly AccountingAccountDbContext _context;
+    private readonly IExpresionEvaluator _expresionEvaluator;
     public const string LEVEL_1 = @"^[0-9]+$";                
     public const string LEVEL_2 = @"^[0-9]+\.[0-9]+$";        
     public const string LEVEL_3 = @"^[0-9]+\.[0-9]+\.[0-9]+$";
-    public FetchAccountingAccountHandler(AccountingAccountDbContext context)
+    public FetchAccountingAccountHandler(AccountingAccountDbContext context, IExpresionEvaluator expresionEvaluator)
     {
+        _expresionEvaluator = expresionEvaluator;
         _context = context;
     }
     public async Task<List<AccountingAccount>> Handle(FetchAccountingAccountCommand request, CancellationToken cancellationToken)
     {
-    
+        Console.WriteLine(await _expresionEvaluator.Evaluate("1+2*x", 12));
         var query = _context.AccountingAccounts.AsQueryable();
         var accounts = await query.ToListAsync(cancellationToken);
 

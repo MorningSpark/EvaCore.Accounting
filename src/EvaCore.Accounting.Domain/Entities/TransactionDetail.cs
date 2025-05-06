@@ -13,11 +13,11 @@ public class TransactionDetail
     // Reference to the related accounting account
     public int? AccountingAccountId { get; set; }
 
-    // Debit distribution amount percent
-    public decimal? DebitDistribution { get; set; }
+    // Debit distribution amount formula
+    public string? DebitFormula { get; set; }
 
-    // Credit distribution amount percent
-    public decimal? CreditDistribution { get; set; }
+    // Credit distribution amount formula
+    public string? CreditFormula { get; set; }
 
     // Date when the transaction detail was created
     public DateTime? CreationDate { get; set; }

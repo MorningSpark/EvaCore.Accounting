@@ -15,10 +15,12 @@ public class AccountingEntryDbContext:DbContext
             entity.ToTable("co_accounting_entry");
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).HasColumnName("ae_id");
+            entity.Property(e => e.TransactionId).HasColumnName("ae_transaction_id");
             entity.Property(e => e.CreationDate).HasColumnName("ae_creation_date");
             entity.Property(e => e.AlterDate).HasColumnName("ae_alter_date");
             entity.Property(e => e.Description).HasColumnName("ae_description");
             entity.Property(e => e.Projection).HasColumnName("ae_projection");
+            entity.Property(e => e.ValorTotal).HasColumnName("ae_valor_total");
             entity.Property(e => e.Type).HasColumnName("ae_type");
 
         });

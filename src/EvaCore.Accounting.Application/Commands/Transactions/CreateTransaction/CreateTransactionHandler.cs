@@ -33,8 +33,8 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
                 {
                     TransactionId = transaction.Id,
                     AccountingAccountId = detail.AccountingAccountId,
-                    DebitDistribution = detail.DebitDistribution,
-                    CreditDistribution = detail.CreditDistribution,
+                    DebitFormula = detail.DebitFormula,
+                    CreditFormula = detail.CreditFormula,
                     CreationDate = DateTime.UtcNow
                 };
                 _transactionDetailDbContext.Add(transactionDetail);

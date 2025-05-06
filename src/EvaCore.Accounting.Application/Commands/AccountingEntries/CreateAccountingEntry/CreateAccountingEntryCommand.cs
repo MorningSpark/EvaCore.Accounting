@@ -16,6 +16,11 @@ public class CreateAccountingEntryCommand:IRequest<AccountingEntry>
     public int? Id { get; set; }
 
     /// <summary>
+    /// Identifier of the transaction
+    /// </summary>
+    public int? TransactionId { get; set; }
+
+    /// <summary>
     /// Identifier of the accounting account
     /// </summary>
     public string? Description { get; set; } 
@@ -29,6 +34,11 @@ public class CreateAccountingEntryCommand:IRequest<AccountingEntry>
     /// Projection
     /// </summary>
     public bool? Projection { get; set; } 
+
+    /// <summary>
+    /// Total value of the accounting entry
+    /// </summary>
+    public decimal? ValorTotal { get; set; }
 
     /// <summary>
     /// Transaction Date

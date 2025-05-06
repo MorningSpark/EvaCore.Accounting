@@ -3,6 +3,7 @@ using EvaCore.Accounting.Application.Extensions;
 using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddServicesApplication();
+builder.Services.AddUtils();
 
 builder.Services.AddInfrastructure("Server=www.eva-core.net;Database=db_accounting;User Id=sa;Password=Aezakami123;Encrypt=False;");
 builder.Services.AddControllers();
