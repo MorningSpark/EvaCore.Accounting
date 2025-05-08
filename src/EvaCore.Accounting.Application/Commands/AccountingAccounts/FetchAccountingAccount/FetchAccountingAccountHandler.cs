@@ -1,71 +1,28 @@
-using System;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using EvaCore.Accounting.Domain.Entities;
-using EvaCore.Accounting.Infrastructure.Data;
-using EvaCore.Accounting.Infrastructure.Utilitario;
+using EvaCore.Accounting.Infrastructure.Services;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace EvaCore.Accounting.Application.Commands.AccountingAccounts.FetchAccountingAccount;
 
 public class FetchAccountingAccountHandler : IRequestHandler<FetchAccountingAccountCommand, List<AccountingAccount>>
 {
-    private readonly AccountingAccountDbContext _context;
-    private readonly IExpresionEvaluator _expresionEvaluator;
-    public const string LEVEL_1 = @"^[0-9]+$";                
-    public const string LEVEL_2 = @"^[0-9]+\.[0-9]+$";        
-    public const string LEVEL_3 = @"^[0-9]+\.[0-9]+\.[0-9]+$";
-    public FetchAccountingAccountHandler(AccountingAccountDbContext context, IExpresionEvaluator expresionEvaluator)
+    private readonly IAccountingAccountService _accountingAccountService;
+    public FetchAccountingAccountHandler(IAccountingAccountService accountingAccountService)
     {
-        _expresionEvaluator = expresionEvaluator;
-        _context = context;
+        _accountingAccountService = accountingAccountService;
     }
+    
     public async Task<List<AccountingAccount>> Handle(FetchAccountingAccountCommand request, CancellationToken cancellationToken)
     {
-        Console.WriteLine(await _expresionEvaluator.Evaluate("1+2*x", 12));
-        var query = _context.AccountingAccounts.AsQueryable();
-        var accounts = await query.ToListAsync(cancellationToken);
+        AccountingAccount account = new AccountingAccount
+        {
+            ParentId = request.ParentId,
+            ReferenceCode = request.ReferenceCode,
+            Reference = request.Reference,
+            Name = request.Name,
+            CreationDate = DateTime.UtcNow
+        };
 
-        var filter = accounts.Select(c => new AccountingAccount
-        { 
-            Id = c.Id,
-            ParentId = c.ParentId ?? 0,
-            CreationDate = c.CreationDate,
-            AlterDate = c.AlterDate,
-            ReferenceCode = c.ReferenceCode,
-            Reference = c.Reference,
-            Name = c.Name,
-            Resource = c.Resource
-        }).ToList();
-
-        if (request.Level == 1)
-            filter = filter.Where(c => Regex.IsMatch(c.ReferenceCode??string.Empty,LEVEL_1)).ToList();
-
-        if (request.Level == 2)
-            filter = filter.Where(c => Regex.IsMatch(c.ReferenceCode??string.Empty,LEVEL_2)).ToList();
-
-        if (request.Level == 3)
-            filter = filter.Where(c => Regex.IsMatch(c.ReferenceCode??string.Empty,LEVEL_3)).ToList();
-
-        if (!request.Id.Equals(0))
-            filter = filter.Where(c => c.Id.Equals(request.Id)).ToList();
-
-        if (!request.ParentId.Equals(0))
-            filter = filter.Where(c => c.ParentId.Equals(request.ParentId)).ToList();
-        
-        if (!string.IsNullOrEmpty(request.ReferenceCode))
-            filter = filter.Where(c => c.ReferenceCode==request.ReferenceCode).ToList();
-
-        if (!string.IsNullOrEmpty(request.Reference))
-            filter = filter.Where(c => c.Reference==request.Reference).ToList();
-
-        if (!string.IsNullOrEmpty(request.Name))
-            filter = filter.Where(c => c.Name==request.Name).ToList();
-
-        if (!string.IsNullOrEmpty(request.Type))    
-            filter = filter.Where(c => c.Resource==request.Type).ToList();
-
-        return filter;;
+        return (await _accountingAccountService.GetCustomAccountingAccountByIdAsync(account, request.Level, cancellationToken)).ToList();
     }
 }

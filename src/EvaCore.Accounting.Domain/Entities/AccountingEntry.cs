@@ -30,9 +30,9 @@ public class AccountingEntry
     public bool? Projection { get; set; } 
 
     /// <summary>
-    /// Total value of the accounting entry
+    /// Reference value of the accounting entry
     /// </summary>
-    public decimal? ValorTotal { get; set; }
+    public decimal? ReferenceValue { get; set; }
 
     /// <summary>
     /// Creation date of the accounting entry

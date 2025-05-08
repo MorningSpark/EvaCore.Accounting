@@ -1,4 +1,5 @@
 using EvaCore.Accounting.Infrastructure.Data;
+using EvaCore.Accounting.Infrastructure.Services;
 using EvaCore.Accounting.Infrastructure.Utilitario;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,8 @@ public static class DependencyInjection
 
     public static IServiceCollection AddUtils(this IServiceCollection services){
         services.AddScoped<IExpresionEvaluator,ExpresionEvaluator>();
+        services.AddScoped<IAccountingEntryService,AccountingEntryService>();
+        services.AddScoped<IAccountingAccountService,AccountingAccountService>();
         return services;
     }
 }

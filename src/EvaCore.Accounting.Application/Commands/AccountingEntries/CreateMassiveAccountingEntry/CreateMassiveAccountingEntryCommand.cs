@@ -2,14 +2,10 @@ using System;
 using EvaCore.Accounting.Domain.Entities;
 using MediatR;
 
-namespace EvaCore.Accounting.Application.Commands.AccountingEntries.CreateAccountingEntry;
+namespace EvaCore.Accounting.Application.Commands.AccountingEntries.CreateMassiveAccountingEntry;
 
-public class CreateAccountingEntryCommand:IRequest<AccountingEntry>
+public class AccountingEntryMassive
 {
-    public CreateAccountingEntryCommand()
-    {
-        AccountingEntryDetails = new List<AccountingEntryDetail>();
-    }
     /// <summary>
     /// Identifier of the accounting entry
     /// </summary>
@@ -49,5 +45,19 @@ public class CreateAccountingEntryCommand:IRequest<AccountingEntry>
     /// Details Accounting entry
     /// </summary>
     public List<AccountingEntryDetail>? AccountingEntryDetails { get; set; }
-
+    
 }
+public class CreateMassiveAccountingEntryCommand : IRequest<int>
+{
+    public CreateMassiveAccountingEntryCommand()
+    {
+        AccountingEntries = new List<AccountingEntryMassive>();
+    }
+    
+    /// <summary>
+    /// List of accounting entries to be created
+    /// </summary>
+    public List<AccountingEntryMassive> AccountingEntries { get; set; }
+    
+}
+

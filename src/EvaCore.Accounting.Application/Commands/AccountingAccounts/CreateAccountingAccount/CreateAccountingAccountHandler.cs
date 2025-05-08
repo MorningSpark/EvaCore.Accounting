@@ -1,17 +1,18 @@
 using EvaCore.Accounting.Domain.Entities;
 using EvaCore.Accounting.Infrastructure.Data;
+using EvaCore.Accounting.Infrastructure.Services;
 using MediatR;
 
 namespace EvaCore.Accounting.Application.Commands.AccountingAccounts.CreateAccountingAccount;
 
 public class CreateAccountingAccountHandler : IRequestHandler<CreateAccountingAccountCommand, int>
 {
-    private readonly AccountingAccountDbContext _context;
-
-    public CreateAccountingAccountHandler(AccountingAccountDbContext context)
+    readonly IAccountingAccountService _accountingAccountService;
+    public CreateAccountingAccountHandler(IAccountingAccountService accountingAccountService)
     {
-        _context = context;
+        _accountingAccountService = accountingAccountService;
     }
+
     public async Task<int> Handle(CreateAccountingAccountCommand request, CancellationToken cancellationToken)
     {
         AccountingAccount account = new AccountingAccount
@@ -23,8 +24,6 @@ public class CreateAccountingAccountHandler : IRequestHandler<CreateAccountingAc
             Resource = request.Resource,
             CreationDate = DateTime.UtcNow
         };
-        _context.AccountingAccounts.Add(account);
-        await _context.SaveChangesAsync(cancellationToken);
-        return account.Id ?? throw new InvalidOperationException("Account ID cannot be null.");
+        return (await _accountingAccountService.CreateAccountingAccountAsync(account)).Id ?? 0;
     }
 }
