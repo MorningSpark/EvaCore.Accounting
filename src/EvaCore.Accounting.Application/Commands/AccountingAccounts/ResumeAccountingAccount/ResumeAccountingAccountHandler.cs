@@ -37,28 +37,23 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
 
         IEnumerable<AccountingEntryDetail> entries = await _accountingEntryService.GetAccountingEntryRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken);
 
-        var accountDict = accounts.Where(a => a.ReferenceCode != null).ToDictionary(a => a.ReferenceCode!);
+        var accountDict = accounts.ToDictionary(a => a.ReferenceCode);
         var parentChildRelations = accounts.GroupBy(a => a.ParentId)
-                                   .Where(g => g.Key.HasValue)
-                                   .ToDictionary(g => g.Key, g => g.Select(a => a.ReferenceCode).ToList());
+                                           .Where(g => g.Key != null)
+                                           .ToDictionary(g => g.Key, g => g.Select(a => a.ReferenceCode).ToList());
 
         foreach (var transaction in entries)
         {
             var account = accounts.FirstOrDefault(a => a.Id == transaction.AccountingAccountId);
-            Console.WriteLine($"{account.Name} and {account.ReferenceValue} debito {transaction.CreditAmount} -> credito {transaction.DebitAmount}");
             if (account != null)
             {
-                account.ReferenceValue = (account.ReferenceValue ?? 0) + ((transaction.DebitAmount ?? 0) - (transaction.CreditAmount ?? 0));
+                account.ReferenceValue = (account.ReferenceValue ?? 0) + (transaction.DebitAmount ?? 0) - (transaction.CreditAmount ?? 0);
             }
         }
 
-        foreach (var account in accounts)
-        {
-            Console.WriteLine($"{account.Name} and {account.ReferenceValue}");
-        }
 
         CalculateValues(accountDict, parentChildRelations);
-        DisplayAccounts(accountDict, parentChildRelations, accounts.Where(a => a.ParentId == null), 0, _resumeAccountingAccountResults);
+        DisplayAccounts(accountDict, parentChildRelations, accounts.Where(a => a.ParentId == null), 0);
 
 
         return _resumeAccountingAccountResults;
@@ -76,29 +71,22 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
                 {
                     if (accountDict.ContainsKey(childCode))
                     {
-
-                        account.ReferenceValue = (account.ReferenceValue) + (accountDict[childCode].ReferenceValue);
+                        account.ReferenceValue = (account.ReferenceValue ?? 0) + (accountDict[childCode].ReferenceValue ?? 0);
                     }
                 }
             }
         }
     }
 
-    static void DisplayAccounts(Dictionary<string, AccountingAccount> accountDict, Dictionary<int?, List<string>> relations, IEnumerable<AccountingAccount> accounts, int level, List<ResumeAccountingAccountResult> resumeAccountingAccountResults)
+
+    static void DisplayAccounts(Dictionary<string, AccountingAccount> accountDict, Dictionary<int?, List<string>> relations, IEnumerable<AccountingAccount> accounts, int level)
     {
         foreach (var account in accounts.OrderBy(a => a.ReferenceCode))
         {
             Console.WriteLine($"{new string(' ', level * 4)}{account.ReferenceCode} - {account.Name}: {account.ReferenceValue:C}");
             if (relations.ContainsKey(account.Id))
             {
-                ResumeAccountingAccountResult result = new ResumeAccountingAccountResult
-                {
-                    ReferenceCode = account.ReferenceCode,
-                    Name = account.Name,
-                    Balance = account.ReferenceValue,
-                };
-                resumeAccountingAccountResults.Add(result);
-                DisplayAccounts(accountDict, relations, relations[account.Id].Select(code => accountDict[code]), level + 1, resumeAccountingAccountResults);
+                DisplayAccounts(accountDict, relations, relations[account.Id].Select(code => accountDict[code]), level + 1);
             }
         }
     }
