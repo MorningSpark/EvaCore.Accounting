@@ -5,6 +5,9 @@ using MediatR;
 
 namespace EvaCore.Accounting.Application.Commands.AccountingAccounts.ResumeAccountingAccount;
 
+/// <summary>
+/// handler for the ResumeAccountingAccountCommand.
+/// </summary>
 public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAccountCommand, IEnumerable<ResumeAccountingAccountResult>>
 {
     private readonly IAccountingAccountService _accountingAccountService;
@@ -18,6 +21,7 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
 
     /// <summary>
     /// 1. first get all the accounts
+    /// 2. get all the entries in the range
     /// </summary>
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
@@ -52,12 +56,17 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
 
 
         CalculateValues(accountDict, parentChildRelations);
-        DisplayAccounts(accountDict, parentChildRelations, accounts.Where(a => a.ParentId == null), _resumeAccountingAccountResults);
+        ProcessAccount(accountDict, parentChildRelations, accounts.Where(a => a.ParentId == null), _resumeAccountingAccountResults);
 
 
         return _resumeAccountingAccountResults;
     }
 
+    /// <summary>
+    /// Calculate the values for each account based on its children.
+    /// </summary>
+    /// <param name="accountDict"></param>
+    /// <param name="relations"></param>
     private static void CalculateValues(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations)
     {
         var orderedAccounts = accountDict.Values.OrderByDescending(a => a.ReferenceCode?.Length ?? 0).ToList();
@@ -74,8 +83,14 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
         }
     }
 
-
-    private static void DisplayAccounts(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, List<ResumeAccountingAccountResult> resumeAccountingAccountResults)
+    /// <summary>
+    /// Recursively process the accounts and their children to calculate the values.
+    /// </summary>
+    /// <param name="accountDict"></param>
+    /// <param name="relations"></param>
+    /// <param name="accounts"></param>
+    /// <param name="resumeAccountingAccountResults"></param>
+    private static void ProcessAccount(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, List<ResumeAccountingAccountResult> resumeAccountingAccountResults)
     {
         foreach (var account in accounts.OrderBy(a => a.ReferenceCode))
         {
@@ -88,7 +103,7 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
             resumeAccountingAccountResults.Add(result);
             if (account.Id.HasValue && relations.ContainsKey(account.Id.Value))
             {
-                DisplayAccounts(accountDict, relations, relations[account.Id.Value].Select(code => accountDict[code]), resumeAccountingAccountResults);
+                ProcessAccount(accountDict, relations, relations[account.Id.Value].Select(code => accountDict[code]), resumeAccountingAccountResults);
             }
         }
     }
