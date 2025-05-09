@@ -18,7 +18,6 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
 
     /// <summary>
     /// 1. first get all the accounts
-    /// 2.
     /// </summary>
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
@@ -59,7 +58,7 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
         return _resumeAccountingAccountResults;
     }
 
-    static void CalculateValues(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations)
+    private static void CalculateValues(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations)
     {
         var orderedAccounts = accountDict.Values.OrderByDescending(a => a.ReferenceCode?.Length ?? 0).ToList();
 
@@ -76,7 +75,7 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
     }
 
 
-    static void DisplayAccounts(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, List<ResumeAccountingAccountResult> resumeAccountingAccountResults)
+    private static void DisplayAccounts(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, List<ResumeAccountingAccountResult> resumeAccountingAccountResults)
     {
         foreach (var account in accounts.OrderBy(a => a.ReferenceCode))
         {

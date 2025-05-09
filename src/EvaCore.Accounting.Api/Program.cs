@@ -1,6 +1,5 @@
 using EvaCore.Accounting.Infrastructure;
 using EvaCore.Accounting.Application.Extensions;
-using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddServicesApplication();
 builder.Services.AddUtils();
@@ -19,4 +18,4 @@ app.MapOpenApi();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
