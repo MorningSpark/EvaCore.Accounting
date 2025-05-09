@@ -37,10 +37,11 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
 
         IEnumerable<AccountingEntryDetail> entries = await _accountingEntryService.GetAccountingEntryRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken);
 
-        var accountDict = accounts.ToDictionary(a => a.ReferenceCode);
+        var accountDict = accounts.Where(a => a.ReferenceCode != null)
+                                   .ToDictionary(a => a.ReferenceCode!);
         var parentChildRelations = accounts.GroupBy(a => a.ParentId)
-                                           .Where(g => g.Key != null)
-                                           .ToDictionary(g => g.Key, g => g.Select(a => a.ReferenceCode).ToList());
+                                           .Where(g => g.Key.HasValue)
+                                           .ToDictionary(g => g.Key!.Value, g => g.Select(a => a.ReferenceCode!).ToList());
 
         foreach (var transaction in entries)
         {
@@ -59,34 +60,31 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
         return _resumeAccountingAccountResults;
     }
 
-    static void CalculateValues(Dictionary<string, AccountingAccount> accountDict, Dictionary<int?, List<string>> relations)
+    static void CalculateValues(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations)
     {
-        var orderedAccounts = accountDict.Values.OrderByDescending(a => a.ReferenceCode.Length).ToList();
+        var orderedAccounts = accountDict.Values.OrderByDescending(a => a.ReferenceCode?.Length ?? 0).ToList();
 
         foreach (var account in orderedAccounts)
         {
-            if (relations.ContainsKey(account.Id))
+            if (account.Id.HasValue && relations.TryGetValue(account.Id.Value, out var childCodes))
             {
-                foreach (var childCode in relations[account.Id])
+                foreach (var childCode in childCodes.Where(code => accountDict.ContainsKey(code)))
                 {
-                    if (accountDict.ContainsKey(childCode))
-                    {
-                        account.ReferenceValue = (account.ReferenceValue ?? 0) + (accountDict[childCode].ReferenceValue ?? 0);
-                    }
+                    account.ReferenceValue = (account.ReferenceValue ?? 0) + (accountDict[childCode].ReferenceValue ?? 0);
                 }
             }
         }
     }
 
 
-    static void DisplayAccounts(Dictionary<string, AccountingAccount> accountDict, Dictionary<int?, List<string>> relations, IEnumerable<AccountingAccount> accounts, int level)
+    static void DisplayAccounts(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, int level)
     {
         foreach (var account in accounts.OrderBy(a => a.ReferenceCode))
         {
             Console.WriteLine($"{new string(' ', level * 4)}{account.ReferenceCode} - {account.Name}: {account.ReferenceValue:C}");
-            if (relations.ContainsKey(account.Id))
+            if (account.Id.HasValue && relations.ContainsKey(account.Id.Value))
             {
-                DisplayAccounts(accountDict, relations, relations[account.Id].Select(code => accountDict[code]), level + 1);
+                DisplayAccounts(accountDict, relations, relations[account.Id.Value].Select(code => accountDict[code]), level + 1);
             }
         }
     }
