@@ -1,5 +1,6 @@
 using EvaCore.Accounting.Application.Commands.AccountingAccounts.CreateAccountingAccount;
 using EvaCore.Accounting.Application.Commands.AccountingAccounts.FetchAccountingAccount;
+using EvaCore.Accounting.Application.Commands.AccountingAccounts.ResumeAccountingAccount;
 using EvaCore.Accounting.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -31,13 +32,13 @@ namespace EvaCore.Accounting.Api.Controllers
 
         [HttpGet]
         public async Task<ActionResult<List<AccountingAccount>>> ObtenerCuentasFiltradas(
-        [FromQuery] int? id, 
+        [FromQuery] int? id,
         [FromQuery] int? parentId,
-        [FromQuery] string? referenceCode, 
-        [FromQuery] string? reference, 
-        [FromQuery] string? name, 
-        [FromQuery] string? type, 
-        [FromQuery] int? level, 
+        [FromQuery] string? referenceCode,
+        [FromQuery] string? reference,
+        [FromQuery] string? name,
+        [FromQuery] string? type,
+        [FromQuery] int? level,
         [FromQuery] DateTime? creationDate)
         {
             FetchAccountingAccountCommand query = new FetchAccountingAccountCommand
@@ -50,10 +51,23 @@ namespace EvaCore.Accounting.Api.Controllers
                 Type = type,
                 Level = level ?? 0,
             };
-           
+
 
             var cuentas = await _mediator.Send(query);
             return Ok(cuentas);
+        }
+
+        /// <summary>
+        /// Create a new accounting entry
+        /// </summary>
+        /// <param name="command">The command containing the details of the accounting entry to create</param>
+        /// <returns>The ID of the created accounting entry</returns>
+        [HttpPost]
+        [Route("resume")]
+        public async Task<IActionResult> CreateMasive([FromBody] ResumeAccountingAccountCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
     }
 }

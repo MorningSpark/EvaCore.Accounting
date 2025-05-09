@@ -7,7 +7,7 @@ namespace EvaCore.Accounting.Infrastructure.Data;
 public class AccountingEntryDetailDbContext:DbContext
 {
     public AccountingEntryDetailDbContext(DbContextOptions<AccountingEntryDetailDbContext> options) : base(options){}
-
+    public DbSet<AccountingEntryDetail> AccountingEntryDetails { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AccountingEntryDetail>(entity =>

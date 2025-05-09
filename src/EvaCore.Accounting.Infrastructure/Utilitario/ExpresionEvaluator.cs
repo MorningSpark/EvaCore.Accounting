@@ -1,6 +1,3 @@
-using System;
-using System.Text;
-
 namespace EvaCore.Accounting.Infrastructure.Utilitario;
 
 public class ExpresionEvaluator : IExpresionEvaluator
@@ -12,14 +9,13 @@ public class ExpresionEvaluator : IExpresionEvaluator
             if (string.IsNullOrEmpty(expression))
                 return 0;
             expression = expression.Replace("x", value.ToString());
-            StringBuilder expressionBuilder = new StringBuilder(expression);
             string rpnExpression = ConvertInfixToRPN(expression);
             double result = EvaluateRPN(rpnExpression);
             return (decimal)result;
         });
     }
 
-    private string ConvertInfixToRPN(string expression)
+    private static string ConvertInfixToRPN(string expression)
     {
         Dictionary<char, int> precedence = new Dictionary<char, int>
         {
@@ -33,39 +29,7 @@ public class ExpresionEvaluator : IExpresionEvaluator
 
         foreach (char token in expression.Replace(" ", ""))
         {
-            if (char.IsDigit(token) || token == '.')
-            {
-                numberBuffer += token;
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(numberBuffer))
-                {
-                    output.Add(numberBuffer);
-                    numberBuffer = "";
-                }
-
-                if (token == '(')
-                {
-                    operators.Push(token);
-                }
-                else if (token == ')')
-                {
-                    while (operators.Count > 0 && operators.Peek() != '(')
-                        output.Add(operators.Pop().ToString());
-
-                    operators.Pop(); // Quitar '('
-                }
-                else if (precedence.ContainsKey(token))
-                {
-                    while (operators.Count > 0 && precedence.ContainsKey(operators.Peek()) &&
-                           precedence[token] <= precedence[operators.Peek()])
-                    {
-                        output.Add(operators.Pop().ToString());
-                    }
-                    operators.Push(token);
-                }
-            }
+            ProcessToken(token, precedence, operators, output, ref numberBuffer);
         }
 
         if (!string.IsNullOrEmpty(numberBuffer))
@@ -81,7 +45,59 @@ public class ExpresionEvaluator : IExpresionEvaluator
         return string.Join(" ", output);
     }
 
-    private double EvaluateRPN(string expression)
+    private static void ProcessToken(char token, Dictionary<char, int> precedence, Stack<char> operators, List<string> output, ref string numberBuffer)
+    {
+        if (char.IsDigit(token) || token == '.')
+        {
+            numberBuffer += token;
+        }
+        else
+        {
+            if (!string.IsNullOrEmpty(numberBuffer))
+            {
+                output.Add(numberBuffer);
+                numberBuffer = "";
+            }
+
+            if (token == '(')
+            {
+                operators.Push(token);
+            }
+            else if (token == ')')
+            {
+                ProcessClosingParenthesis(operators, output);
+            }
+            else if (precedence.ContainsKey(token))
+            {
+                ProcessOperator(token, precedence, operators, output);
+            }
+        }
+    }
+
+    private static void ProcessClosingParenthesis(Stack<char> operators, List<string> output)
+    {
+        while (operators.Count > 0 && operators.Peek() != '(')
+        {
+            output.Add(operators.Pop().ToString());
+        }
+
+        if (operators.Count > 0)
+        {
+            operators.Pop(); 
+        }
+    }
+
+    private static void ProcessOperator(char token, Dictionary<char, int> precedence, Stack<char> operators, List<string> output)
+    {
+        while (operators.Count > 0 && precedence.ContainsKey(operators.Peek()) &&
+               precedence[token] <= precedence[operators.Peek()])
+        {
+            output.Add(operators.Pop().ToString());
+        }
+        operators.Push(token);
+    }
+
+    private static double EvaluateRPN(string expression)
     {
         Stack<double> stack = new Stack<double>();
         string[] tokens = expression.Split(' ');

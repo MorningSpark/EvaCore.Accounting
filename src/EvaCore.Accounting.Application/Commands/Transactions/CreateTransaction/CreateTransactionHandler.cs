@@ -1,18 +1,16 @@
-using System;
 using EvaCore.Accounting.Domain.Entities;
-using EvaCore.Accounting.Infrastructure.Data;
+using EvaCore.Accounting.Infrastructure.Services;
 using MediatR;
 
 namespace EvaCore.Accounting.Application.Commands.Transactions.CreateTransaction;
 
 public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand, Transaction>
 {
-    private readonly TransactionDbContext _transactionDbContext;
-    private readonly TransactionDetailDbContext _transactionDetailDbContext;
-    public CreateTransactionHandler(TransactionDbContext transactionDbContext, TransactionDetailDbContext transactionDetailDbContext)
+    private readonly ITransactionService _transactionService;
+
+    public CreateTransactionHandler(ITransactionService transactionService)
     {
-        _transactionDbContext = transactionDbContext;
-        _transactionDetailDbContext = transactionDetailDbContext;
+        _transactionService = transactionService;
     }
     public async Task<Transaction> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
     {
@@ -23,24 +21,6 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
             CreationDate = DateTime.UtcNow
         };
 
-        _transactionDbContext.Add(transaction);
-        await _transactionDbContext.SaveChangesAsync(cancellationToken);
-        if (request.TransactionDetails != null && request.TransactionDetails.Any())
-        {
-            foreach (var detail in request.TransactionDetails)
-            {
-                TransactionDetail transactionDetail = new TransactionDetail
-                {
-                    TransactionId = transaction.Id,
-                    AccountingAccountId = detail.AccountingAccountId,
-                    DebitFormula = detail.DebitFormula,
-                    CreditFormula = detail.CreditFormula,
-                    CreationDate = DateTime.UtcNow
-                };
-                _transactionDetailDbContext.Add(transactionDetail);
-            }
-            await _transactionDetailDbContext.SaveChangesAsync(cancellationToken);
-        }
-        return transaction;
+        return await _transactionService.CreateTransactionAsync(transaction, request.TransactionDetails ?? new List<TransactionDetail>(), cancellationToken);
     }
 }

@@ -1,8 +1,6 @@
-using System;
+namespace EvaCore.Accounting.Application.Dto;
 
-namespace EvaCore.Accounting.Domain.Entities;
-
-public class AccountingAccount
+public class ResumeAccountingAccountResult
 {
     /// <summary>
     /// Account identifier
@@ -33,11 +31,11 @@ public class AccountingAccount
     /// Account Type
     /// </summary>
     public string? Resource { get; set; }
-
+    
     /// <summary>
-    /// Reference value
+    /// Account total balance
     /// </summary>
-    public decimal? ReferenceValue { get; set; }
+    public decimal? Balance { get; set; }   
 
     /// <summary>
     /// Creation date
