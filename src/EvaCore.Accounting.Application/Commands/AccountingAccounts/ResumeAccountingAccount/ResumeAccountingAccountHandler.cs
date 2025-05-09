@@ -1,4 +1,3 @@
-using System;
 using EvaCore.Accounting.Application.Dto;
 using EvaCore.Accounting.Domain.Entities;
 using EvaCore.Accounting.Infrastructure.Services;
@@ -54,7 +53,7 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
 
 
         CalculateValues(accountDict, parentChildRelations);
-        DisplayAccounts(accountDict, parentChildRelations, accounts.Where(a => a.ParentId == null), 0);
+        DisplayAccounts(accountDict, parentChildRelations, accounts.Where(a => a.ParentId == null), _resumeAccountingAccountResults);
 
 
         return _resumeAccountingAccountResults;
@@ -77,14 +76,20 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
     }
 
 
-    static void DisplayAccounts(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, int level)
+    static void DisplayAccounts(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, List<ResumeAccountingAccountResult> resumeAccountingAccountResults)
     {
         foreach (var account in accounts.OrderBy(a => a.ReferenceCode))
         {
-            Console.WriteLine($"{new string(' ', level * 4)}{account.ReferenceCode} - {account.Name}: {account.ReferenceValue:C}");
+            ResumeAccountingAccountResult result = new ResumeAccountingAccountResult
+            {
+                ReferenceCode = account.ReferenceCode,
+                Name = account.Name,
+                Balance = account.ReferenceValue ?? 0,
+            };
+            resumeAccountingAccountResults.Add(result);
             if (account.Id.HasValue && relations.ContainsKey(account.Id.Value))
             {
-                DisplayAccounts(accountDict, relations, relations[account.Id.Value].Select(code => accountDict[code]), level + 1);
+                DisplayAccounts(accountDict, relations, relations[account.Id.Value].Select(code => accountDict[code]), resumeAccountingAccountResults);
             }
         }
     }
