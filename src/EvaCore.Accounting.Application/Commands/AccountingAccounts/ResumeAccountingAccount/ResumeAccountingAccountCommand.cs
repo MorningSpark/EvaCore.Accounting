@@ -19,4 +19,9 @@ public class ResumeAccountingAccountCommand : IRequest<IEnumerable<ResumeAccount
     /// Level of the accounting account to be resumed
     /// </summary>
     public int? Level { get; set; }    
+
+    /// <summary>
+    /// is projection included
+    /// </summary>
+    public bool? ProjectionFlag { get; set; }    
 }

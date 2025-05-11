@@ -37,7 +37,11 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
             throw new ArgumentException("InitialDate and EndDate must have a value.");
         }
 
-        IEnumerable<AccountingEntryDetail> entries = await _accountingEntryService.GetAccountingEntryRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken);
+        IEnumerable<AccountingEntry> entryHeader = await _accountingEntryService.GetAllAccountingEntriesAsync(cancellationToken);
+        
+        IEnumerable<AccountingEntryDetail> entries = !(request.ProjectionFlag ?? false)?
+        (await _accountingEntryService.GetAccountingEntryRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken)).Where(d => entryHeader.Any(f => f.Id == d.AccountingEntryId && f.Projection == false)).ToList():
+        (await _accountingEntryService.GetAccountingEntryRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken));
 
         var accountDict = accounts.Where(a => a.ReferenceCode != null)
                                    .ToDictionary(a => a.ReferenceCode!);
