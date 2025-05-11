@@ -8,7 +8,7 @@ namespace EvaCore.Accounting.Application.Commands.AccountingAccounts.ResumeAccou
 /// <summary>
 /// handler for the ResumeAccountingAccountCommand.
 /// </summary>
-public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAccountCommand, IEnumerable<ResumeAccountingAccountResult>>
+public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAccountCommand, IEnumerable<AccountingAccountInfo>>
 {
     private readonly IAccountingAccountService _accountingAccountService;
     private readonly IAccountingEntryService _accountingEntryService;
@@ -26,9 +26,9 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<IEnumerable<ResumeAccountingAccountResult>> Handle(ResumeAccountingAccountCommand request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<AccountingAccountInfo>> Handle(ResumeAccountingAccountCommand request, CancellationToken cancellationToken)
     {
-        List<ResumeAccountingAccountResult> _resumeAccountingAccountResults = new List<ResumeAccountingAccountResult>();
+        List<AccountingAccountInfo> _resumeAccountingAccountResults = new List<AccountingAccountInfo>();
 
         IEnumerable<AccountingAccount> accounts = await _accountingAccountService.GetAllAccountingAccountsAsync(cancellationToken);
 
@@ -94,12 +94,13 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
     /// <param name="relations"></param>
     /// <param name="accounts"></param>
     /// <param name="resumeAccountingAccountResults"></param>
-    private static void ProcessAccount(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, List<ResumeAccountingAccountResult> resumeAccountingAccountResults)
+    private static void ProcessAccount(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, List<AccountingAccountInfo> resumeAccountingAccountResults)
     {
         foreach (var account in accounts.OrderBy(a => a.ReferenceCode))
         {
-            ResumeAccountingAccountResult result = new ResumeAccountingAccountResult
+            AccountingAccountInfo result = new AccountingAccountInfo
             {
+                Id = account.Id,
                 ReferenceCode = account.ReferenceCode,
                 Name = account.Name,
                 Balance = account.ReferenceValue ?? 0,

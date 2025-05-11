@@ -3,7 +3,7 @@ using MediatR;
 
 namespace EvaCore.Accounting.Application.Commands.AccountingAccounts.ResumeAccountingAccount;
 
-public class ResumeAccountingAccountCommand : IRequest<IEnumerable<ResumeAccountingAccountResult>>
+public class ResumeAccountingAccountCommand : IRequest<IEnumerable<AccountingAccountInfo>>
 {
     /// <summary>
     /// Initial date of the accounting account to be resumed
