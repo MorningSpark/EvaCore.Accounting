@@ -64,7 +64,7 @@ public class AccountingEntryService : IAccountingEntryService
         return accountingEntry;
     }
 
-    public async Task<IEnumerable<AccountingEntry>> GetAllAccountingEntriesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<AccountingEntry>> GetAllAccountingEntryAsync(CancellationToken cancellationToken = default)
     {
         var query = _accountingEntryDbContext.AccountingEntries.AsQueryable();
         var accounts = await query.ToListAsync(cancellationToken);
@@ -84,7 +84,7 @@ public class AccountingEntryService : IAccountingEntryService
         return filter;
     }
 
-    public async Task<IEnumerable<AccountingEntryDetail>> GetAccountingEntryRangeAsync(DateTime initialDate, DateTime finalDate, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<AccountingEntryDetail>> GetAccountingEntryDetailRangeAsync(DateTime initialDate, DateTime finalDate, CancellationToken cancellationToken = default)
     {
         var query = _accountingEntryDetailDbContext.AccountingEntryDetails.AsQueryable();
         var accounts = await query.ToListAsync(cancellationToken);

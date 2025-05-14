@@ -37,11 +37,11 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
             throw new ArgumentException("InitialDate and EndDate must have a value.");
         }
 
-        IEnumerable<AccountingEntry> entryHeader = await _accountingEntryService.GetAllAccountingEntriesAsync(cancellationToken);
+        IEnumerable<AccountingEntry> entryHeader = await _accountingEntryService.GetAllAccountingEntryAsync(cancellationToken);
         
         IEnumerable<AccountingEntryDetail> entries = !(request.ProjectionFlag ?? false)?
-        (await _accountingEntryService.GetAccountingEntryRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken)).Where(d => entryHeader.Any(f => f.Id == d.AccountingEntryId && f.Projection == false)).ToList():
-        (await _accountingEntryService.GetAccountingEntryRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken));
+        (await _accountingEntryService.GetAccountingEntryDetailRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken)).Where(d => entryHeader.Any(f => f.Id == d.AccountingEntryId && f.Projection == false)).ToList():
+        (await _accountingEntryService.GetAccountingEntryDetailRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken));
 
         var accountDict = accounts.Where(a => a.ReferenceCode != null)
                                    .ToDictionary(a => a.ReferenceCode!);
@@ -103,7 +103,7 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
                 Id = account.Id,
                 ReferenceCode = account.ReferenceCode,
                 Name = account.Name,
-                Balance = account.ReferenceValue ?? 0,
+                Balance = Math.Abs(account.ReferenceValue?? 0) ,
             };
             resumeAccountingAccountResults.Add(result);
             if (account.Id.HasValue && relations.ContainsKey(account.Id.Value))
