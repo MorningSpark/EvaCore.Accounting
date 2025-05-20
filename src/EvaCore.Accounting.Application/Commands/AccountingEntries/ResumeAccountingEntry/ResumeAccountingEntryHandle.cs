@@ -25,11 +25,11 @@ public class ResumeAccountingEntryHandle:IRequestHandler<ResumeAccountingEntryCo
         List<AccountingEntryDetail> accountingEntryDetails = (await _accountingEntryService.GetAccountingEntryDetailRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken)).ToList();
         List<AccountingAccount> accountingAccounts = (await _accountingAccountService.GetAllAccountingAccountsAsync(cancellationToken)).ToList();
 
-
+        bool mostrarTodo = request.ProjectionFlag ?? false;
         List<AccountingEntryResume> resultado = (from accountingEntryDetail in accountingEntryDetails
                 join accountEntry in accountingEntries on accountingEntryDetail.AccountingEntryId equals accountEntry.Id  
                 join accountingAccount in accountingAccounts on accountingEntryDetail.AccountingAccountId equals accountingAccount.Id
-                where accountingAccount.Id == request.AccountingAccountId && accountEntry.Projection == request.ProjectionFlag
+                where accountingAccount.Id == request.AccountingAccountId && (mostrarTodo || accountEntry.Projection == false)
                 select new AccountingEntryResume
                 {
                     Id = accountingEntryDetail.Id,

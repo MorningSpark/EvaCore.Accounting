@@ -1,23 +1,32 @@
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-windowsservercore-ltsc2019 AS base
-
-WORKDIR /src
-
-COPY ["src/EvaCore.Accounting.Api/EvaCore.Accounting.Api.csproj", "EvaCore.Accounting.Api/"]
-COPY ["src/EvaCore.Accounting.Domain/EvaCore.Accounting.Domain.csproj", "EvaCore.Accounting.Domain/"]
-COPY ["src/EvaCore.Accounting.Application/EvaCore.Accounting.Application.csproj", "EvaCore.Accounting.Application/"]
-COPY ["src/EvaCore.Accounting.Infrastructure/EvaCore.Accounting.Infrastructure.csproj", "EvaCore.Accounting.Infrastructure/"]
-RUN dotnet restore "src/EvaCore.Accounting.Api/EvaCore.Accounting.Api.csproj"
-COPY . .
-WORKDIR "/src/EvaCore.Accounting.Api"
-RUN dotnet build "EvaCore.Accounting.Api.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "EvaCore.Accounting.Api.csproj" -c Release -o /app/publish
-
-FROM base AS final
+# Etapa de compilación
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Copiamos la solución y los proyectos
+COPY EvaCore.Accounting.sln ./
+COPY src/EvaCore.Accounting.Api/*.csproj ./src/EvaCore.Accounting.Api/
+COPY src/EvaCore.Accounting.Application/*.csproj ./src/EvaCore.Accounting.Application/
+COPY src/EvaCore.Accounting.Domain/*.csproj ./src/EvaCore.Accounting.Domain/
+COPY src/EvaCore.Accounting.Infrastructure/*.csproj ./src/EvaCore.Accounting.Infrastructure/
+
+RUN dotnet restore "EvaCore.Accounting.sln"
+
+# Copiamos el resto del código fuente
+COPY . .
+
+# Publicamos el proyecto API
+WORKDIR /app/src/EvaCore.Accounting.Api
+RUN dotnet publish -c Release -o /app/publish
+
+# Imagen final
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /app
+COPY --from=build /app/publish .
+
 EXPOSE 5002
 ENV ASPNETCORE_URLS=https://+:5002
 ENTRYPOINT ["dotnet", "EvaCore.Accounting.Api.dll"]
+
+
+
 
