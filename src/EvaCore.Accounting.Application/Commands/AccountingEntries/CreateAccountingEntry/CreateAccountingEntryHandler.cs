@@ -16,6 +16,7 @@ public class CreateAccountingEntryHandler : IRequestHandler<CreateAccountingEntr
     }
     public async Task<AccountingEntry> Handle(CreateAccountingEntryCommand request, CancellationToken cancellationToken)
     {
+        var now = DateTime.Now;
         AccountingEntry accountingEntry = new AccountingEntry
         {
             Id = request.Id,
@@ -24,7 +25,7 @@ public class CreateAccountingEntryHandler : IRequestHandler<CreateAccountingEntr
             Breed = request.Breed,
             Projection = request.Projection,
             ReferenceValue = request.ReferenceValue ?? request.AccountingEntryDetails?.Sum(x => x.CreditAmount),
-            CreationDate = request.Date ?? DateTime.Now
+            CreationDate = request.Date ?? new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second)
         };
         return await _accountingEntryService.CreateAccountingEntryAsync(accountingEntry, request.AccountingEntryDetails ?? new List<AccountingEntryDetail>(), cancellationToken);
     }
