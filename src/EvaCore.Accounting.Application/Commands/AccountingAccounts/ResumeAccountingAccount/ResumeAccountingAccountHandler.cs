@@ -1,4 +1,4 @@
-using EvaCore.Accounting.Application.Dto;
+using EvaCore.Accounting.Application.Dto.Responses;
 using EvaCore.Accounting.Domain.Entities;
 using EvaCore.Accounting.Infrastructure.Services;
 using MediatR;

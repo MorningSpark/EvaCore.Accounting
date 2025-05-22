@@ -1,4 +1,4 @@
-using EvaCore.Accounting.Application.Dto;
+using EvaCore.Accounting.Application.Dto.Responses;
 using MediatR;
 
 namespace EvaCore.Accounting.Application.Commands.AccountingEntries.ResumeAccountingEntry;

@@ -1,4 +1,4 @@
-namespace EvaCore.Accounting.Application.Dto;
+namespace EvaCore.Accounting.Application.Dto.Responses;
 
 public class AccountingAccountInfo
 {
