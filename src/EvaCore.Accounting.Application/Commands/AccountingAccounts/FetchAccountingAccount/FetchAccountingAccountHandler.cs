@@ -18,7 +18,9 @@ public class FetchAccountingAccountHandler : IRequestHandler<FetchAccountingAcco
         {
             ParentId = request.ParentId,
             ReferenceCode = request.ReferenceCode,
+            UserId = request.UserId,
             Reference = request.Reference,
+            Transaction= request.Transaction,
             Name = request.Name,
             CreationDate = DateTime.UtcNow
         };

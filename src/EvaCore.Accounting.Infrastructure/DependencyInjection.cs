@@ -23,7 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IExpresionEvaluator, ExpresionEvaluator>();
         services.AddScoped<IAccountingEntryService, AccountingEntryService>();
         services.AddScoped<IAccountingAccountService, AccountingAccountService>();
-        services.AddScoped<ITransactionService, TransactionService>();
+        services.AddScoped<IAccountingTransactionService, AccountingTransactionService>();
         return services;
     }
 }

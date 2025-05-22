@@ -2,13 +2,13 @@ using System;
 using EvaCore.Accounting.Domain.Entities;
 using MediatR;
 
-namespace EvaCore.Accounting.Application.Commands.Transactions.CreateTransaction;
+namespace EvaCore.Accounting.Application.Commands.AccountingTransactions.CreateAccountingTransaction;
 
-public class CreateTransactionCommand:IRequest<Transaction>
+public class CreateAccountingTransactionCommand:IRequest<AccountingTransaction>
 {
-    public CreateTransactionCommand()
+    public CreateAccountingTransactionCommand()
     {
-        TransactionDetails = new List<TransactionDetail>();
+        TransactionDetails = new List<AccountingTransactionDetail>();
     }
     // Primary key identifier
     public int? Id { get; set; }
@@ -28,6 +28,6 @@ public class CreateTransactionCommand:IRequest<Transaction>
     /// <summary>
     /// Details of transactions
     /// </summary>
-    public List<TransactionDetail>? TransactionDetails { get; set; }
+    public List<AccountingTransactionDetail>? TransactionDetails { get; set; }
 
 }

@@ -15,6 +15,11 @@ public class AccountingAccount
     public int? ParentId { get; set; }
 
     /// <summary>
+    /// User Id
+    /// </summary>
+    public int? UserId { get; set; }
+
+    /// <summary>
     /// Reference code
     /// </summary>
     public string? ReferenceCode { get; set; }
@@ -33,6 +38,11 @@ public class AccountingAccount
     /// Account Type
     /// </summary>
     public string? Resource { get; set; }
+
+    /// <summary>
+    /// Is transactional?
+    /// </summary>
+    public bool? Transaction { get; set; }
 
     /// <summary>
     /// Reference value

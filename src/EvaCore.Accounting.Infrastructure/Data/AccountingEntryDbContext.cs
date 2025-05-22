@@ -21,7 +21,7 @@ public class AccountingEntryDbContext:DbContext
             entity.Property(e => e.Description).HasColumnName("ae_description");
             entity.Property(e => e.Projection).HasColumnName("ae_projection");
             entity.Property(e => e.ReferenceValue).HasColumnName("ae_reference_value");
-            entity.Property(e => e.Type).HasColumnName("ae_type");
+            entity.Property(e => e.Breed).HasColumnName("ae_breed");
 
         });
 

@@ -21,10 +21,10 @@ public class CreateAccountingEntryHandler : IRequestHandler<CreateAccountingEntr
             Id = request.Id,
             TransactionId = request.TransactionId,
             Description = request.Description,
-            Type = request.Type,
+            Breed = request.Breed,
             Projection = request.Projection,
             ReferenceValue = request.ReferenceValue ?? request.AccountingEntryDetails?.Sum(x => x.CreditAmount),
-            CreationDate = request.Date ?? DateTime.UtcNow
+            CreationDate = request.Date ?? DateTime.Now
         };
         return await _accountingEntryService.CreateAccountingEntryAsync(accountingEntry, request.AccountingEntryDetails ?? new List<AccountingEntryDetail>(), cancellationToken);
     }

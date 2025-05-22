@@ -2,7 +2,7 @@ using System;
 
 namespace EvaCore.Accounting.Domain.Entities;
 
-public class Transaction
+public class AccountingTransaction
 {
     // Primary key identifier
     public int? Id { get; set; }

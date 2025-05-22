@@ -33,9 +33,11 @@ public class AccountingAccountService : IAccountingAccountService
         {
             Id = c.Id,
             ParentId = c.ParentId ?? 0,
+            UserId = c.UserId ?? 0,
             CreationDate = c.CreationDate,
             AlterDate = c.AlterDate,
             ReferenceCode = c.ReferenceCode,
+            Transaction = c.Transaction,
             Reference = c.Reference,
             Name = c.Name,
             Resource = c.Resource
@@ -57,10 +59,12 @@ public class AccountingAccountService : IAccountingAccountService
         {
             Id = c.Id,
             ParentId = c.ParentId ?? 0,
+            UserId = c.UserId ?? 0,
             CreationDate = c.CreationDate,
             AlterDate = c.AlterDate,
             ReferenceCode = c.ReferenceCode,
             Reference = c.Reference,
+            Transaction = c.Transaction,
             Name = c.Name,
             Resource = c.Resource
         }).ToList();
@@ -83,11 +87,17 @@ public class AccountingAccountService : IAccountingAccountService
         if (!string.IsNullOrEmpty(accountingAccount.ReferenceCode))
             filter = filter.Where(c => c.ReferenceCode == accountingAccount.ReferenceCode).ToList();
 
+        if (!accountingAccount.UserId.Equals(0))
+            filter = filter.Where(c => c.UserId == accountingAccount.UserId).ToList();
+
         if (!string.IsNullOrEmpty(accountingAccount.Reference))
             filter = filter.Where(c => c.Reference == accountingAccount.Reference).ToList();
 
         if (!string.IsNullOrEmpty(accountingAccount.Name))
             filter = filter.Where(c => c.Name == accountingAccount.Name).ToList();
+
+        if (accountingAccount.Transaction.HasValue)
+            filter = filter.Where(c => c.Transaction == accountingAccount.Transaction).ToList();
 
         return filter;
     }
@@ -100,10 +110,12 @@ public class AccountingAccountService : IAccountingAccountService
         {
             Id = c.Id,
             ParentId = c.ParentId,
+            UserId = c.UserId,
             CreationDate = c.CreationDate,
             AlterDate = c.AlterDate,
             ReferenceCode = c.ReferenceCode,
             Reference = c.Reference,
+            Transaction = c.Transaction,
             Name = c.Name,
             Resource = c.Resource
         }).ToList();

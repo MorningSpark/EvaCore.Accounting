@@ -7,12 +7,12 @@ namespace EvaCore.Accounting.Infrastructure.Data;
 public class TransactionDetailDbContext:DbContext
 {
     public TransactionDetailDbContext(DbContextOptions<TransactionDetailDbContext> options) : base(options){}
-    public DbSet<TransactionDetail> TransactionDetails { get; set; } = null!;
+    public DbSet<AccountingTransactionDetail> AccountingTransactionDetails { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TransactionDetail>(entity =>
+        modelBuilder.Entity<AccountingTransactionDetail>(entity =>
         {
-            entity.ToTable("co_transaction_detail");
+            entity.ToTable("co_accounting_taransaction_detail");
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).HasColumnName("td_id");
             entity.Property(e => e.TransactionId).HasColumnName("td_transaction_id");

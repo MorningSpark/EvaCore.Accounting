@@ -3,17 +3,17 @@ using EvaCore.Accounting.Infrastructure.Data;
 
 namespace EvaCore.Accounting.Infrastructure.Services;
 
-public class TransactionService : ITransactionService
+public class AccountingTransactionService : IAccountingTransactionService
 {
     private readonly TransactionDbContext _transactionDbContext;
     private readonly TransactionDetailDbContext _transactionDetailDbContext;
 
-    public TransactionService(TransactionDbContext transactionDbContext, TransactionDetailDbContext transactionDetailDbContext)
+    public AccountingTransactionService(TransactionDbContext transactionDbContext, TransactionDetailDbContext transactionDetailDbContext)
     {
         _transactionDbContext = transactionDbContext;
         _transactionDetailDbContext = transactionDetailDbContext;
     }
-    public async Task<Transaction> CreateTransactionAsync(Transaction transaction, List<TransactionDetail> transactionDetails, CancellationToken cancellationToken = default)
+    public async Task<AccountingTransaction> CreateTransactionAsync(AccountingTransaction transaction, List<AccountingTransactionDetail> transactionDetails, CancellationToken cancellationToken = default)
     {
         _transactionDbContext.Add(transaction);
         await _transactionDbContext.SaveChangesAsync(cancellationToken);
@@ -21,7 +21,7 @@ public class TransactionService : ITransactionService
         {
             foreach (var detail in transactionDetails)
             {
-                TransactionDetail transactionDetail = new TransactionDetail
+                AccountingTransactionDetail transactionDetail = new AccountingTransactionDetail
                 {
                     TransactionId = transaction.Id,
                     AccountingAccountId = detail.AccountingAccountId,

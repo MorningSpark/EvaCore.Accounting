@@ -24,7 +24,7 @@ public class AccountingEntryMassive
     /// <summary>
     /// Identifier of the type entry
     /// </summary>
-    public int? Type { get; set; } 
+    public int? Breed { get; set; } 
 
     /// <summary>
     /// Projection

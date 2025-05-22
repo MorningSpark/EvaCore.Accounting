@@ -19,8 +19,10 @@ public class CreateAccountingAccountHandler : IRequestHandler<CreateAccountingAc
         {
             ParentId = request.ParentId,
             ReferenceCode = request.ReferenceCode,
+            UserId = request.UserId,
             Reference = request.Reference,
             Name = request.Name,
+            Transaction = request.Transaction,
             Resource = request.Resource,
             CreationDate = DateTime.UtcNow
         };

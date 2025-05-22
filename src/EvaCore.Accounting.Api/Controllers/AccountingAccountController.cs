@@ -37,7 +37,8 @@ namespace EvaCore.Accounting.Api.Controllers
         [FromQuery] string? referenceCode,
         [FromQuery] string? reference,
         [FromQuery] string? name,
-        [FromQuery] string? type,
+        [FromQuery] int? breed,
+        [FromQuery] bool? transaction,
         [FromQuery] int? level,
         [FromQuery] DateTime? creationDate)
         {
@@ -48,7 +49,8 @@ namespace EvaCore.Accounting.Api.Controllers
                 ReferenceCode = referenceCode,
                 Reference = reference,
                 Name = name,
-                Type = type,
+                Transaction = transaction,
+                Breed = breed ?? 0,
                 Level = level ?? 0,
             };
 

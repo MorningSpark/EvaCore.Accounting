@@ -28,7 +28,7 @@ public class AccountingEntryService : IAccountingEntryService
 
         if (!(accountingEntry.TransactionId is null))
         {
-            foreach (var transactionDetail in _transactionDetailDbContext.TransactionDetails.Where(x => x.TransactionId == accountingEntry.TransactionId))
+            foreach (var transactionDetail in _transactionDetailDbContext.AccountingTransactionDetails.Where(x => x.TransactionId == accountingEntry.TransactionId))
             {
                 AccountingEntryDetail accountingEntryDetail = new AccountingEntryDetail
                 {
@@ -74,7 +74,7 @@ public class AccountingEntryService : IAccountingEntryService
             Id = c.Id,
             TransactionId = c.TransactionId,
             Description = c.Description,
-            Type = c.Type,
+            Breed = c.Breed,
             Projection = c.Projection,
             ReferenceValue = c.ReferenceValue ?? 0m,
             CreationDate = c.CreationDate,

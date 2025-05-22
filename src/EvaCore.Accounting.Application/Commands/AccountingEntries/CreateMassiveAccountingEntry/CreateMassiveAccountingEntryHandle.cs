@@ -22,7 +22,7 @@ public class CreateMassiveAccountingEntryHandler : IRequestHandler<CreateMassive
                 Id = accountingEntry.Id,
                 TransactionId = accountingEntry.TransactionId,
                 Description = accountingEntry.Description,
-                Type = accountingEntry.Type,
+                Breed = accountingEntry.Breed,
                 Projection = accountingEntry.Projection,
                 ReferenceValue = accountingEntry.ReferenceValue ?? accountingEntryDetails.Sum(x => x.CreditAmount),
                 CreationDate = accountingEntry.Date ?? DateTime.UtcNow

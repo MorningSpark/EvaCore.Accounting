@@ -20,9 +20,9 @@ public class AccountingEntry
     public string? Description { get; set; } 
 
     /// <summary>
-    /// Identifier of the accounting account
+    /// Breed of the entry 
     /// </summary>
-    public int? Type { get; set; } 
+    public int? Breed { get; set; } 
 
     /// <summary>
     /// Identifier of the projection

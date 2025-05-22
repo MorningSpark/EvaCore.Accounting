@@ -1,5 +1,5 @@
 
-using EvaCore.Accounting.Application.Commands.Transactions.CreateTransaction;
+using EvaCore.Accounting.Application.Commands.AccountingTransactions.CreateAccountingTransaction;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +23,7 @@ namespace EvaCore.Accounting.Api.Controllers
         /// <param name="command">The command containing the details of the accounting entry to create</param>
         /// <returns>The ID of the created accounting entry</returns>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTransactionCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateAccountingTransactionCommand command)
         {
             var result = await _mediator.Send(command);
             return Ok(result);
