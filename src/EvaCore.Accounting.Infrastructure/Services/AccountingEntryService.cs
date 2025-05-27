@@ -102,4 +102,43 @@ public class AccountingEntryService : IAccountingEntryService
         filter = filter.Where(x => x.CreationDate >= initialDate && x.CreationDate < finalDate.AddDays(1)).ToList();
         return filter;
     }
+
+    public async Task<IEnumerable<AccountingEntry>> GetAllAccountingEntryRangeAsync(DateTime initialDate, DateTime finalDate, CancellationToken cancellationToken = default)
+    {
+        var query = _accountingEntryDbContext.AccountingEntries.AsQueryable();
+        var accounts = await query.ToListAsync(cancellationToken);
+
+        var filter = accounts.Select(c => new AccountingEntry
+        {
+            Id = c.Id,
+            TransactionId = c.TransactionId,
+            Description = c.Description,
+            Breed = c.Breed,
+            Projection = c.Projection,
+            ReferenceValue = c.ReferenceValue ?? 0m,
+            CreationDate = c.CreationDate,
+            AlterDate = c.AlterDate
+        }).ToList();
+        filter = filter.Where(x => x.CreationDate >= initialDate && x.CreationDate < finalDate.AddDays(1)).ToList();
+        return filter;
+    }
+
+    public async Task<int> DeleteAccountingEntryAsync(int accountingEntryId, CancellationToken cancellationToken = default)
+    {
+        var cabecera = await _accountingEntryDbContext.AccountingEntries.Where(x => x.Id == accountingEntryId).FirstOrDefaultAsync();
+        var detalles = await _accountingEntryDetailDbContext.AccountingEntryDetails.Where(x => x.AccountingEntryId == accountingEntryId).ToListAsync();
+
+        if (cabecera != null)
+        {
+            _accountingEntryDbContext.AccountingEntries.Remove(cabecera);
+            await _accountingEntryDbContext.SaveChangesAsync(cancellationToken);
+            if (detalles.Any())
+            {
+                _accountingEntryDetailDbContext.AccountingEntryDetails.RemoveRange(detalles);
+                await _accountingEntryDetailDbContext.SaveChangesAsync(cancellationToken);
+            }
+            return accountingEntryId;
+        }
+        return -1;
+    }
 }

@@ -1,9 +1,10 @@
 
 using EvaCore.Accounting.Application.Commands.AccountingEntries.CreateAccountingEntry;
 using EvaCore.Accounting.Application.Commands.AccountingEntries.CreateMassiveAccountingEntry;
+using EvaCore.Accounting.Application.Commands.AccountingEntries.DeleteAccountingEntry;
+using EvaCore.Accounting.Application.Commands.AccountingEntries.FetchAccountingEntry;
 using EvaCore.Accounting.Application.Commands.AccountingEntries.ResumeAccountingEntry;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EvaCore.Accounting.Api.Controllers
@@ -36,6 +37,25 @@ namespace EvaCore.Accounting.Api.Controllers
         /// </summary>
         /// <param name="command">The command containing the details of the accounting entry to create</param>
         /// <returns>The ID of the created accounting entry</returns>
+        [HttpGet]
+        public async Task<IActionResult> FetchAccountingEntryRange([FromQuery] DateTime? initialDate,
+                                                                   [FromQuery] DateTime? endDate
+                                                                   )
+        {
+            var command = new FetchAccountingEntryRangeCommand
+            {
+                InitialDate = initialDate,
+                EndDate = endDate
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Create a new accounting entry
+        /// </summary>
+        /// <param name="command">The command containing the details of the accounting entry to create</param>
+        /// <returns>The ID of the created accounting entry</returns>
         [HttpPost]
         [Route("massive")]
         public async Task<IActionResult> CreateMasive([FromBody] CreateMassiveAccountingEntryCommand command)
@@ -56,5 +76,17 @@ namespace EvaCore.Accounting.Api.Controllers
             var result = await _mediator.Send(command);
             return Ok(result);
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAccountingEntry([FromQuery] int? accountingEntryId)
+        {
+            var command = new DeleteAccountingEntryCommand
+            {
+                AccountingEntryId = accountingEntryId ?? 0
+            }; 
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
     }
 }
