@@ -14,6 +14,6 @@ public class FetchAccountingEntryRangeCommand:IRequest<IEnumerable<AccountingEnt
     /// <summary>
     /// Final date of the accounting entry to be resumed
     /// </summary>
-    public DateTime? EndDate { get; set; }
+    public DateTime? FinalDate { get; set; }
 
 }

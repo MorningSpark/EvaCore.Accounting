@@ -39,13 +39,13 @@ namespace EvaCore.Accounting.Api.Controllers
         /// <returns>The ID of the created accounting entry</returns>
         [HttpGet]
         public async Task<IActionResult> FetchAccountingEntryRange([FromQuery] DateTime? initialDate,
-                                                                   [FromQuery] DateTime? endDate
+                                                                   [FromQuery] DateTime? finalDate
                                                                    )
         {
             var command = new FetchAccountingEntryRangeCommand
             {
                 InitialDate = initialDate,
-                EndDate = endDate
+                FinalDate = finalDate
             };
             var result = await _mediator.Send(command);
             return Ok(result);

@@ -14,11 +14,11 @@ public class FetchAccountingEntryRangeHandle:IRequestHandler<FetchAccountingEntr
     }
     public async Task<IEnumerable<AccountingEntry>> Handle(FetchAccountingEntryRangeCommand request, CancellationToken cancellationToken)
     {
-        if (!request.InitialDate.HasValue || !request.EndDate.HasValue)
+        if (!request.InitialDate.HasValue || !request.FinalDate.HasValue)
         {
-            throw new ArgumentException("InitialDate and EndDate must have a value.");
+            return await _accountingEntryService.GetAllAccountingEntryRangeDefaultAsync(cancellationToken);
         }
-        return await _accountingEntryService.GetAllAccountingEntryRangeAsync(request.InitialDate.Value, request.EndDate.Value, cancellationToken);
+        return await _accountingEntryService.GetAllAccountingEntryRangeAsync(request.InitialDate.Value, request.FinalDate.Value, cancellationToken);
 
     }
 }

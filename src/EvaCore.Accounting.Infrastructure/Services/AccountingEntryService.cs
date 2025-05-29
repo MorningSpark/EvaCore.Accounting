@@ -141,4 +141,27 @@ public class AccountingEntryService : IAccountingEntryService
         }
         return -1;
     }
+
+    public async Task<IEnumerable<AccountingEntry>> GetAllAccountingEntryRangeDefaultAsync(CancellationToken cancellationToken = default)
+    {
+        var query = _accountingEntryDbContext.AccountingEntries.AsQueryable();
+        var accounts = await query.ToListAsync(cancellationToken);
+        DateTime fechaActual = DateTime.UtcNow;
+        DateTime initialDate= new DateTime(fechaActual.Year, fechaActual.Month, 1);
+        DateTime primerDiaDelSiguienteMes = initialDate.AddMonths(1);
+        DateTime finalDate = primerDiaDelSiguienteMes.AddDays(-1);
+        var filter = accounts.Select(c => new AccountingEntry
+        {
+            Id = c.Id,
+            TransactionId = c.TransactionId,
+            Description = c.Description,
+            Breed = c.Breed,
+            Projection = c.Projection,
+            ReferenceValue = c.ReferenceValue ?? 0m,
+            CreationDate = c.CreationDate,
+            AlterDate = c.AlterDate
+        }).ToList();
+        filter = filter.Where(x => x.CreationDate >= initialDate && x.CreationDate < finalDate.AddDays(1)).ToList();
+        return filter;
+    }
 }
