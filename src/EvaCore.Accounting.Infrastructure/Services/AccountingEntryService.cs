@@ -161,7 +161,7 @@ public class AccountingEntryService : IAccountingEntryService
             CreationDate = c.CreationDate,
             AlterDate = c.AlterDate
         }).ToList();
-        filter = filter.Where(x => x.CreationDate >= initialDate && x.CreationDate < finalDate.AddDays(1)).ToList();
+        filter = filter.Where(x => x.CreationDate >= initialDate && x.CreationDate < finalDate.AddDays(1)&& x.Projection.Equals(false)).ToList();
         return filter;
     }
 }
