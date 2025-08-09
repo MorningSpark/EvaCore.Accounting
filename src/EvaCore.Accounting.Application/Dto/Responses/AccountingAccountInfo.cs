@@ -13,6 +13,11 @@ public class AccountingAccountInfo
     public string? Name { get; set; }
 
     /// <summary>
+    /// Configuration
+    /// </summary>
+    public int? Configuration { get; set; }
+
+    /// <summary>
     /// Reference code
     /// </summary>
     public string? ReferenceCode { get; set; }

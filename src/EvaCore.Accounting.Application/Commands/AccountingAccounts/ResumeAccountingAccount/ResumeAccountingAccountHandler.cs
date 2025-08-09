@@ -1,3 +1,4 @@
+using Azure.Core;
 using EvaCore.Accounting.Application.Dto.Responses;
 using EvaCore.Accounting.Domain.Entities;
 using EvaCore.Accounting.Infrastructure.Services;
@@ -60,7 +61,7 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
 
 
         CalculateValues(accountDict, parentChildRelations);
-        ProcessAccount(accountDict, parentChildRelations, accounts.Where(a => a.ParentId == null), _resumeAccountingAccountResults);
+        ProcessAccount(accountDict, parentChildRelations, accounts.Where(a => a.ParentId == null), _resumeAccountingAccountResults, request.AbsoluteBalance ?? false);
 
 
         return _resumeAccountingAccountResults;
@@ -94,7 +95,8 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
     /// <param name="relations"></param>
     /// <param name="accounts"></param>
     /// <param name="resumeAccountingAccountResults"></param>
-    private static void ProcessAccount(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, List<AccountingAccountInfo> resumeAccountingAccountResults)
+    /// <param name="absoluteBalance"></param>
+    private static void ProcessAccount(Dictionary<string, AccountingAccount> accountDict, Dictionary<int, List<string>> relations, IEnumerable<AccountingAccount> accounts, List<AccountingAccountInfo> resumeAccountingAccountResults, bool absoluteBalance)
     {
         foreach (var account in accounts.OrderBy(a => a.ReferenceCode))
         {
@@ -103,12 +105,13 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
                 Id = account.Id,
                 ReferenceCode = account.ReferenceCode,
                 Name = account.Name,
-                Balance = Math.Abs(account.ReferenceValue?? 0) ,
+                Configuration = account.Configuration,
+                Balance = absoluteBalance ? (account.ReferenceValue ?? 0) : Math.Abs(account.ReferenceValue ?? 0),
             };
             resumeAccountingAccountResults.Add(result);
             if (account.Id.HasValue && relations.ContainsKey(account.Id.Value))
             {
-                ProcessAccount(accountDict, relations, relations[account.Id.Value].Select(code => accountDict[code]), resumeAccountingAccountResults);
+                ProcessAccount(accountDict, relations, relations[account.Id.Value].Select(code => accountDict[code]), resumeAccountingAccountResults, absoluteBalance);
             }
         }
     }

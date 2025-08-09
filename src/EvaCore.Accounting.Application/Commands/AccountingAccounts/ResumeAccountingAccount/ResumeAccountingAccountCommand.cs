@@ -18,10 +18,21 @@ public class ResumeAccountingAccountCommand : IRequest<IEnumerable<AccountingAcc
     /// <summary>
     /// Level of the accounting account to be resumed
     /// </summary>
-    public int? Level { get; set; }    
+    public int? Level { get; set; }
 
     /// <summary>
     /// is projection included
     /// </summary>
-    public bool? ProjectionFlag { get; set; }    
+    public bool? ProjectionFlag { get; set; }
+
+    /// <summary>
+    /// configuration set
+    /// </summary>
+    public int? Configuration { get; set; }
+
+    /// <summary>
+    /// Absolute balance
+    /// </summary>
+    public bool? AbsoluteBalance { get; set; }    
+    
 }

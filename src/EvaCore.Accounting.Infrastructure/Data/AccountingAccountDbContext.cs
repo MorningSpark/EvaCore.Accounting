@@ -17,6 +17,7 @@ public class AccountingAccountDbContext : DbContext
             entity.Property(e => e.Id).HasColumnName("aa_id");
             entity.Property(e => e.ParentId).HasColumnName("aa_parent_id");
             entity.Property(e => e.UserId).HasColumnName("aa_user_id");
+            entity.Property(e => e.Configuration).HasColumnName("aa_configuration");
             entity.Property(e => e.CreationDate).HasColumnName("aa_creation_date");
             entity.Property(e => e.AlterDate).HasColumnName("aa_alter_date");
             entity.Property(e => e.ReferenceCode).HasColumnName("aa_reference_code");

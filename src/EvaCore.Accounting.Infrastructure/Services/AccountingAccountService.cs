@@ -39,6 +39,7 @@ public class AccountingAccountService : IAccountingAccountService
             ReferenceCode = c.ReferenceCode,
             Transaction = c.Transaction,
             Reference = c.Reference,
+            Configuration = c.Configuration,
             Name = c.Name,
             Resource = c.Resource
         }).ToList();
@@ -65,6 +66,7 @@ public class AccountingAccountService : IAccountingAccountService
             ReferenceCode = c.ReferenceCode,
             Reference = c.Reference,
             Transaction = c.Transaction,
+            Configuration = c.Configuration,
             Name = c.Name,
             Resource = c.Resource
         }).ToList();
@@ -99,6 +101,9 @@ public class AccountingAccountService : IAccountingAccountService
         if (accountingAccount.Transaction.HasValue)
             filter = filter.Where(c => c.Transaction == accountingAccount.Transaction).ToList();
 
+        if (accountingAccount.Configuration.HasValue)
+            filter = filter.Where(c => ((c.Configuration.GetValueOrDefault() & accountingAccount.Configuration.GetValueOrDefault()) != 0)).ToList();
+
         return filter;
     }
     public async Task<IEnumerable<AccountingAccount>> GetAllAccountingAccountsAsync(CancellationToken cancellationToken = default)
@@ -116,6 +121,7 @@ public class AccountingAccountService : IAccountingAccountService
             ReferenceCode = c.ReferenceCode,
             Reference = c.Reference,
             Transaction = c.Transaction,
+            Configuration = c.Configuration,
             Name = c.Name,
             Resource = c.Resource
         }).ToList();

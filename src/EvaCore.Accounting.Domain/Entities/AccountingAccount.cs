@@ -40,6 +40,11 @@ public class AccountingAccount
     public string? Resource { get; set; }
 
     /// <summary>
+    /// General Configuration
+    /// </summary>
+    public int? Configuration { get; set; }
+
+    /// <summary>
     /// Is transactional?
     /// </summary>
     public bool? Transaction { get; set; }
