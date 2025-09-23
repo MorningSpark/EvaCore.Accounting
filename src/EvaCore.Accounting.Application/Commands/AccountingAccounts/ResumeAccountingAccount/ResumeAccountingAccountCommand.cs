@@ -31,6 +31,11 @@ public class ResumeAccountingAccountCommand : IRequest<IEnumerable<AccountingAcc
     public int? Configuration { get; set; }
 
     /// <summary>
+    /// configuration sexclude
+    /// </summary>
+    public int? ConfigurationExclude { get; set; }
+
+    /// <summary>
     /// Absolute balance
     /// </summary>
     public bool? AbsoluteBalance { get; set; }    

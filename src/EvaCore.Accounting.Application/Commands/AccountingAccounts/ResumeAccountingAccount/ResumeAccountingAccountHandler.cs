@@ -32,6 +32,10 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
         List<AccountingAccountInfo> _resumeAccountingAccountResults = new List<AccountingAccountInfo>();
 
         IEnumerable<AccountingAccount> accounts = await _accountingAccountService.GetAllAccountingAccountsAsync(cancellationToken);
+        //filtro
+        if(request.Configuration.HasValue)
+            accounts = accounts.Where(c => (c.Configuration & request.Configuration) == 0);
+        
 
         if (!request.InitialDate.HasValue || !request.EndDate.HasValue)
         {
@@ -108,7 +112,8 @@ public class ResumeAccountingAccountHandler : IRequestHandler<ResumeAccountingAc
                 Configuration = account.Configuration,
                 Balance = absoluteBalance ? (account.ReferenceValue ?? 0) : Math.Abs(account.ReferenceValue ?? 0),
             };
-            resumeAccountingAccountResults.Add(result);
+            if(result.Balance != 0 || (result.Configuration & 0x04) == 0)
+                resumeAccountingAccountResults.Add(result);
             if (account.Id.HasValue && relations.ContainsKey(account.Id.Value))
             {
                 ProcessAccount(accountDict, relations, relations[account.Id.Value].Select(code => accountDict[code]), resumeAccountingAccountResults, absoluteBalance);
